@@ -1,7 +1,9 @@
 package com.pls.pls_example;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import Jama.Matrix;
@@ -39,8 +41,12 @@ public class helpers {
 		List<String[]> rowList = new ArrayList<String[]>();
 		try (BufferedReader br = new BufferedReader(new FileReader(path))) {
 			String line;
+			int linecounter = 0;
 			while ((line = br.readLine()) != null) {
+				//去除原始数据第一行
+				if(linecounter++ == 0) continue;
 				String[] lineItems = line.split(",");
+				//rowList.add(lineItems);
 				rowList.add(lineItems);
 			}
 			br.close();
@@ -53,10 +59,11 @@ public class helpers {
 			String[] row = rowList.get(i);
 			matrix[i] = row;
 		}
-		double[][] tableDouble = new double[matrix.length][matrix[0].length];
+		//去除原始数据第一列
+		double[][] tableDouble = new double[matrix.length][matrix[0].length - 1];
 		for(int i=0; i<matrix.length; i++) {
-		    for(int j=0; j<matrix[0].length; j++) {
-		        tableDouble[i][j]= Double.parseDouble(matrix[i][j]);
+		    for(int j=1; j<matrix[0].length; j++) {
+		        tableDouble[i][j - 1]= Double.parseDouble(matrix[i][j]);
 		    }
 		}
 		return tableDouble;
@@ -90,5 +97,18 @@ public class helpers {
 			System.out.format("Mean absolute percentage error:       %f\n", meanpercentError/known.length);
 		}
 	}
+	
+	public static void writeFile(String path){
+		File writeName = new File(path);
+		if(!writeName.getParentFile().exists()){
+    		writeName.getParentFile().mkdirs();
+    	}
+        try {
+			writeName.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	
 }

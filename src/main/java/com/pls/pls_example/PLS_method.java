@@ -1,5 +1,10 @@
 package com.pls.pls_example;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import Jama.Matrix;
 
 
@@ -56,7 +61,22 @@ public class PLS_method {
     public double[][] getWstar(){return Wstar;}
   
     // Nipals
-    public PLS_method(final double[][] X, final double[][] Y, int factors){
+    public PLS_method(final double[][] X, final double[][] Y, int factors) throws IOException{
+    	//save P
+    	String p_path = "PLS\\data\\p.csv";
+    	File writeName = new File(p_path);
+		if(!writeName.getParentFile().exists()){
+    		writeName.getParentFile().mkdirs();
+    	}
+        try {
+			writeName.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        FileWriter writer = new FileWriter(writeName);
+        BufferedWriter out = new BufferedWriter(writer);
+        
+    	
         // Initialize and prepare the data
         int rows = X.length;
         int xcols = X[0].length;
@@ -66,7 +86,8 @@ public class PLS_method {
         E = X;
         double[][] F = new double[rows][ycols];
         F = Y;
-      
+        //System.out.format("P有%d行,%d列",xcols,factors);
+        //System.out.println();
         T = new double[rows][factors];
         U = new double[rows][factors];
         P = new double[xcols][factors];
@@ -204,7 +225,17 @@ public class PLS_method {
         }
       
         // Calculate the coefficient vector
-
+        //output p to p.csv
+        for(int i = 0; i < P.length; i++){
+        	for(int j = 0; j < P[0].length; j++){
+        		out.write(P[i][j] + ",");
+             	out.flush(); // 把缓存区内容压入文件
+        	}
+        	 //换行
+            out.write("\r\n");
+            out.flush();
+        }
+        
         Matrix Pmat = new Matrix(P);
         double[][] tempB = new double[B.length][B.length];
         for (int i = 0; i < B.length; i++){

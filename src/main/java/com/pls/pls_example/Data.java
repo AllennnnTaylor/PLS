@@ -9,7 +9,11 @@ public class Data {
 	public Data(double[][] csv){
 		gen_TrainTest(csv, 100);
 	}
-	
+	/**
+	 * 获取输入的X 
+	 * @param array
+	 * @return
+	 */
 	private double[][] getInput(double[][] array){
 		double[][] tableDouble = new double[array.length][array[0].length-1];
 		for(int i=0; i<array.length; i++) {
@@ -27,8 +31,13 @@ public class Data {
 		}
 		return tableDouble;
 	}
-	
+	/**
+	 * 
+	 * @param array   
+	 * @param percent 100
+	 */
 	private void gen_TrainTest(double[][] array, double percent){
+		//数据行 - 行*percent
 		int count = (int) (array.length - Math.floor(array.length * percent));
 		if(percent <= 0 || count > array.length || count <= 0){
 			xTrain = getInput(array);
